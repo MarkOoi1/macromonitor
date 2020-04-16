@@ -7,6 +7,9 @@ const passport = require('passport');
 
 const app = express();
 
+const PORT = process.env.PORT || 5000;
+const HOST = process.env.HOST || "localhost";
+
 // Passport config
 require('./config/passport')(passport);
 
@@ -16,7 +19,7 @@ const db = require('./config/keys').mongoURI;
 // Connect to Mongo
 mongoose
     .connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
-    .then(() => console.log('MongoDB connected...'))
+    .then(() => console.log(`MongoDB connected for ${__filename}...`))
     .catch(err => console.log(err));
 
 // EJS
@@ -50,7 +53,9 @@ app.use((req,res,next) => {
 // Use Routes
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
+app.use('/api/twitterscraper', require('./routes/api/twitterscraper'));
 
-const PORT = process.env.PORT || 5000;
+// Cronjobs
+const cron = require('./scripts/cron.js').twitter(HOST,PORT,'ForexLive',100000);
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
