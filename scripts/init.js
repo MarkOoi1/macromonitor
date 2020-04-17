@@ -1,6 +1,6 @@
 /****** **** **** **** **** 
  * Populate the database documents and relationships.
- * Market, Component, Region, Keyword
+ * Market, Component, Region and config settings
 */
 
 const mongoose = require('mongoose');
@@ -157,7 +157,3 @@ newRegionArr = Market.find()
         return regionArr;
     })
     .catch(err => console.log(err));
-
-
-
-
