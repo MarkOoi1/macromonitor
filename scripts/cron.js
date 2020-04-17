@@ -13,7 +13,7 @@ var Region = require('../models/Region');
 
 let keywords;
 let profiles = ['ForexLive', 'LiveSquawk'];
-let interval = 120000000; // Every minute + slippage
+let interval = 120000; // Every minute + slippage
 
 Region.find({},'keywords')
     .distinct('keywords', function(err, results){
