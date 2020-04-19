@@ -7,8 +7,11 @@ Functionality:
 * Custom built Twitter profile scraper using node-cron to collect the latest news
 * IG Markets API for a live data feed, trade execution
 * Express-ejs for the template engine
-* NodeJS for backend functionality that can serve multiple frontends (Reach, ejs)
+* NodeJS / Mongo for backend functionality
 
+
+TODO:
+* Inefficiencies with the code is assigning vars to all templates when logged in. Like Smarty, there should be a way to specify which bit of content has specific vars assigned to it. Might be a disadvantage of using EJS.
 
 ### Version: 0.0.1
 

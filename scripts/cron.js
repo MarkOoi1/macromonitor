@@ -12,7 +12,10 @@ console.log("Initiating CRON: Twitter scraping...");
 var Region = require('../models/Region');
 
 let keywords;
-let profiles = ['ForexLive', 'LiveSquawk'];
+
+// TODO: Save Twitter profiles, interval in db to manage via an interface.
+
+let profiles = ['ForexLive', 'LiveSquawk', 'CNBC'];
 let interval = 120000; // Every minute + slippage
 
 Region.find({},'keywords')
@@ -32,11 +35,9 @@ Region.find({},'keywords')
 
 /***** ***** ***** ***** ***** *****
  * Cron handler
- * 
+ * Schedule tasks to be run on the server  
  */
 
-
-// schedule tasks to be run on the server   
 module.exports = {
     twitter: function(host,port) {
         

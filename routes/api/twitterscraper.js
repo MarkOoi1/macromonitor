@@ -40,8 +40,8 @@ router.get('/', (req,res) => {
                 var tweet = $(this).find('p.tweet-text').text();
         
                 var newNews = new News({
-                    title: name,
                     type: 'News',
+                    profile: name,
                     content: tweet,
                     date: date
                 });
@@ -69,6 +69,11 @@ router.get('/', (req,res) => {
                                 console.log('tweet already saved');
                             } else {
                                 console.log('saved item');
+
+                                // Sanitise content (strip hrefs) for ForexLive.
+                                // TODO: Custom santisation needs to be dynamic, not hardcoded.
+                                if(e.profile = "ForexLive") e.content = e.content.split("http",1);
+
                                 e.save();
                             }
                         });

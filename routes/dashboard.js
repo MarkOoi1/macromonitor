@@ -12,8 +12,16 @@ const { ensureAuthenticated } = require('../config/auth');
  * Assign data to the template
  * 
  */
-let overview = require('../site_components/overview');
+const overview = require('../site_components/overview');
+let getAllEvents;
 let monetarypolicy = require('../site_components/monetarypolicy');
+getAllEvents = overview.getAllEvents()
+    .then(res => {
+        getAllEvents = res;
+        return getAllEvents;
+    })
+    .catch(err => console.log(err));
+
 
 /* Monetary Policy vars:
  * 1. Data split by region
@@ -35,12 +43,28 @@ router.get('/monetarypolicy', ensureAuthenticated, (req, res) => res.render('das
 */
 
 // Welcome page
-router.get('/', ensureAuthenticated, (req, res) => {
-        req.session.region = req.query.region || 'Worldwide';
-
+router.get('/', (req, res) => {
+        switch(req.query.region) {
+            case 'Australia': 
+                req.session.region = 'Australia';
+                break;
+            case 'Europe': 
+                req.session.region = 'Europe';
+                break;
+            case 'United States': 
+                req.session.region = 'United States';
+                break;
+            case 'United Kingdom': 
+                req.session.region = 'United Kingdom';
+                break;
+            default:
+                req.session.region = 'Worldwide';
+                break;
+        }
+        
         res.render('dashboard', {
             req: req,
-            overview,
+            overview: getAllEvents,
             mp: monetarypolicy
         });
 });
