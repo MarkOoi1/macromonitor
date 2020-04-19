@@ -26,7 +26,8 @@ Region.find({},'keywords')
     .exec()
     .then(res => {
         keywords = res;
-    });
+    })
+    .catch(err => console.log(err));
 
 
 /***** ***** ***** ***** ***** *****
