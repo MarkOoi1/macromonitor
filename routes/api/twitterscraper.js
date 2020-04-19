@@ -43,6 +43,7 @@ router.get('/', (req,res) => {
                     type: 'News',
                     profile: name,
                     content: tweet,
+                    keywords: [],
                     date: date
                 });
                 
@@ -53,10 +54,20 @@ router.get('/', (req,res) => {
             return newNewsItems;
         })
         .then(foundNews => {
-            var filteredList = foundNews
-                .filter(value => keywords
-                    .some(word => value.content.includes(word))
-                );
+
+            let filteredList = [];
+            foundNews.filter(value => keywords
+                    .some((word) => {
+                        if(value.content.includes(word)) {
+                            value.keywords.push(word);
+                            filteredList.push(value);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                ));
+
             console.log("filtered: ",filteredList.length);
             return filteredList;
             })
@@ -72,8 +83,7 @@ router.get('/', (req,res) => {
 
                                 // Sanitise content (strip hrefs) for ForexLive.
                                 // TODO: Custom santisation needs to be dynamic, not hardcoded.
-                                if(e.profile = "ForexLive") e.content = e.content.split("http",1);
-
+                                if(e.profile == "ForexLive" || e.profile == "CNBC") e.content = e.content.split("http",1);
                                 e.save();
                             }
                         });

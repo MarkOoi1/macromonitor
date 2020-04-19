@@ -22,6 +22,14 @@ getAllEvents = overview.getAllEvents()
     })
     .catch(err => console.log(err));
 
+let newsEvents = overview.getEventsByType('News')
+    .then(res => {
+        newsEvents = res;
+        return newsEvents;
+    })
+    .catch(err => console.log(err));
+
+
 
 /* Monetary Policy vars:
  * 1. Data split by region
@@ -65,6 +73,7 @@ router.get('/', (req, res) => {
         res.render('dashboard', {
             req: req,
             overview: getAllEvents,
+            news: newsEvents,
             mp: monetarypolicy
         });
 });

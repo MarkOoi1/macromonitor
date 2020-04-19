@@ -15,7 +15,8 @@ let keywords;
 
 // TODO: Save Twitter profiles, interval in db to manage via an interface.
 
-let profiles = ['ForexLive', 'LiveSquawk', 'CNBC'];
+let profiles = ['ForexLive', 'LiveSquawk'];
+//let interval = 1200000000; // Every minute + slippage
 let interval = 120000; // Every minute + slippage
 
 Region.find({},'keywords')
