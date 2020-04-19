@@ -39,7 +39,7 @@ router.get('/', (req,res) => {
                 var date = $(this).find('.tweet-timestamp').find('span').data('time') *1000; // Convert seconds to milliseconds
                 var tweet = $(this).find('p.tweet-text').text();
         
-                var newNews = new Event({
+                var newNews = new News({
                     title: name,
                     type: 'News',
                     content: tweet,
