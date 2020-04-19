@@ -6,9 +6,13 @@ const passport = require('passport');
 // User model
 const User = require('../models/User');
 
-router.get('/login', (req, res) => res.render('login'));
+router.get('/login', (req, res) => res.render('login', {
+    req: req
+}));
 
-router.get('/register', (req, res) => res.render('register'));
+router.get('/register', (req, res) => res.render('register', {
+    req: req
+}));
 
 // Register handle
 router.post('/register', (req, res) => {

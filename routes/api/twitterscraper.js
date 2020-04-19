@@ -5,7 +5,7 @@ const axios = require("axios");
 const cheerio = require('cheerio');
 
 // Load News Model
-var News = require('../../models/News');
+var News = require('../../models/Event');
 var Region = require('../../models/Region');
 
 // Retrieve user accounts to scrape
@@ -39,8 +39,9 @@ router.get('/', (req,res) => {
                 var date = $(this).find('.tweet-timestamp').find('span').data('time') *1000; // Convert seconds to milliseconds
                 var tweet = $(this).find('p.tweet-text').text();
         
-                var newNews = new News({
+                var newNews = new Event({
                     title: name,
+                    type: 'News',
                     content: tweet,
                     date: date
                 });
