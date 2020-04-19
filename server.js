@@ -60,6 +60,6 @@ app.use('/api/twitterscraper', require('./routes/api/twitterscraper'));
 app.use(express.static('/public'));
 
 // Cronjobs
-//const cron = require('./scripts/cron.js').twitter(HOST,PORT);
+const cron = require('./scripts/cron.js').twitter(HOST,PORT);
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
