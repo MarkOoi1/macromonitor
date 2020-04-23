@@ -1,8 +1,8 @@
-<h1 class="mt-4">Dashboard</h1>
+<h2 class="mt-4 text-muted">Dashboard</h2>
 <p class="lead mb-3">Welcome</p>
 <ul class="nav nav-tabs">
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#home">Overview</a>
+      <a class="nav-link active" data-toggle="tab" href="#home">Overview</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" href="#profile">COVID19</a>
@@ -27,22 +27,52 @@
  
 
   <div id="myTabContent" class="tab-content">
-    <div class="tab-pane fade" id="home">
-        <% for(var i=0; i<overview.length; i++) { %>
-            <blockquote class="blockquote">
-                <p class="mb-0"><%=overview[i].content %></p>
-                <footer class="blockquote-footer"><%=overview[i].profile %><cite title="Source Title"><%=overview[i].date %></cite></footer>
-              </blockquote>
-          <% } %> 
+
+    <div class="tab-pane fade active show" id="home">
+        <div class="row">
+        <div class="col-lg-4">
+            <h3>Next.<span class="text-muted">24hrs</small></h3>
+        </div>
+        <div class="col-lg-4">
+            <h3>Last.<span class="text-muted">24hrs</small></h3>
+        </div>
+        <div class="list-group col-lg-4">
+            <h3>Last.<span class="text-muted">7days</small></h3>
+            <% for(var i=0; i<overview.length; i++) { %>
+                    <span href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <small class="text-muted"><%= moment(overview[i].date).fromNow() %></small>
+                    </div>
+                    <p class="mb-1"><%=overview[i].content %></p>
+                    
+                    <% if(typeof overview[i].keywords != 'undefined') { %> 
+                            <% overview[i].keywords.forEach(function(word) { %>
+                                    <small class="text-muted"><%=word %> </small>
+                            <% }); %>
+                        <% } %>
+                    </span>
+            <% } %> 
+        </div>
+        </div>
     </div>
-    <div class="tab-pane fade active show" id="profile">
+
+    <div class="tab-pane fade" id="profile">
       <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.</p>
     </div>
     <div class="tab-pane fade" id="monetarypolicy">
         <% for(var i=0; i<news.length; i++) { %>
             <blockquote class="blockquote">
                 <p class="mb-0"><%=news[i].content %></p>
-                <footer class="blockquote-footer"><%=news[i].profile %><cite title="Source Title"><%=news[i].date %></cite></footer>
+
+                <% if(typeof news[i].keywords != 'undefined') { %> 
+                <p>
+                    <% news[i].keywords.forEach(function(word) { %>
+                            <span class="badge badge-secondary"><%=word %></span>
+                    <% }); %>
+                </p>
+                <% } %>
+
+                <footer class="blockquote-footer"><%=news[i].profile %><cite title="Source Title"><%= moment(news[i].date).fromNow() %></cite></footer>
               </blockquote>
           <% } %> 
     </div>

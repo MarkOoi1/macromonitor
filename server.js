@@ -54,12 +54,13 @@ app.use((req,res,next) => {
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 app.use('/dashboard', require('./routes/dashboard'));
+app.use('/api/region', require('./routes/api/region'));
 app.use('/api/twitterscraper', require('./routes/api/twitterscraper'));
 
 // Static files
 app.use(express.static('/public'));
 
 // Cronjobs
-const cron = require('./scripts/cron.js').twitter(HOST,PORT);
+//const cron = require('./scripts/cron.js').twitter(HOST,PORT);
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { ensureAuthenticated } = require('../config/auth');
+var moment = require('moment');
 
 /***
  * Load Components: Monetary Policy, Economic data, COVID19, Markets
@@ -74,7 +75,8 @@ router.get('/', (req, res) => {
             req: req,
             overview: getAllEvents,
             news: newsEvents,
-            mp: monetarypolicy
+            mp: monetarypolicy,
+            moment: moment
         });
 });
 
