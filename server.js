@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+const path = require('path');
 
 const app = express();
 
@@ -60,10 +61,12 @@ app.use('/api/twitterscraper', require('./routes/api/twitterscraper'));
 
 
 if(process.env.NODE_ENV === 'production') { 
+    console.log(process.env.NODE_ENV);
      app.use(express.static(path.join(__dirname, 'clients/materialui/build')));  
      app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'clients/materialui/build/index.html'));  })
 } else {
     // Static files
+    console.log("Not in prod: ",process.env.NODE_ENV);
     app.use(express.static('/public'));
 }
 
