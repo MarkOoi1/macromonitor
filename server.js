@@ -57,8 +57,15 @@ app.use('/dashboard', require('./routes/dashboard'));
 app.use('/api/region', require('./routes/api/region'));
 app.use('/api/twitterscraper', require('./routes/api/twitterscraper'));
 
-// Static files
-app.use(express.static('/public'));
+
+
+if(process.env.NODE_ENV === 'production') { 
+     app.use(express.static(path.join(__dirname, 'clients/materialui/build')));  
+     app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'clients/materialui/build/index.html'));  })
+} else {
+    // Static files
+    app.use(express.static('/public'));
+}
 
 // Cronjobs
 const cron = require('./scripts/cron.js').twitter(HOST,PORT);
