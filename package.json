@@ -4,8 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "concurrently \"nodemon server.js\" \"npm start --prefix ./clients/materialui\""
+    "start": "concurrently node server.js",
+    "dev": "concurrently \"nodemon server.js\" \"npm start --prefix ./clients/materialui\"",
+    "heroku-postbuild": "cd clients/materialui && npm install && npm run build"
   },
   "author": "Mark Ooi",
   "license": "MIT",
