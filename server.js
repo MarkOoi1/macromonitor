@@ -52,7 +52,6 @@ app.use((req,res,next) => {
 })
 
 // Use Routes
-app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 app.use('/dashboard', require('./routes/dashboard'));
 app.use('/api/region', require('./routes/api/region'));
@@ -63,10 +62,11 @@ app.use('/api/twitterscraper', require('./routes/api/twitterscraper'));
 if(process.env.NODE_ENV === 'production') { 
     console.log(process.env.NODE_ENV);
      app.use(express.static(path.join(__dirname, 'clients/materialui/build')));  
-     app.get('*', (req, res) => {    res.sendfile(path.join(__dirname = 'clients/materialui/build/index.html'));  })
+     app.get('/', (req, res) => {    res.sendfile(path.join(__dirname = 'clients/materialui/build/index.html'));  })
 } else {
     // Static files
     console.log("Not in prod: ",process.env.NODE_ENV);
+    app.use('/', require('./routes/index'));
     app.use(express.static('/public'));
 }
 
