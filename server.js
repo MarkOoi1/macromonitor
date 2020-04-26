@@ -5,6 +5,7 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
 const path = require('path');
+const favicon = require('express-favicon');
 
 const app = express();
 
@@ -54,23 +55,28 @@ app.use((req,res,next) => {
 // Use Routes
 app.use('/users', require('./routes/users'));
 app.use('/dashboard', require('./routes/dashboard'));
-app.use('/api/region', require('./routes/api/region'));
 app.use('/api/twitterscraper', require('./routes/api/twitterscraper'));
 
+// Routes: for client
+app.use('/api/region', require('./routes/api/region'));
+app.use('/api/markets', require('./routes/api/markets'));
+app.use('/api/events', require('./routes/api/events'));
 
+app.use(favicon(__dirname + '/build/images/favicon.ico'));
 
 if(process.env.NODE_ENV === 'production') { 
     console.log(process.env.NODE_ENV);
-     app.use(express.static(path.join(__dirname, 'clients/materialui/build')));  
-     app.get('/', (req, res) => {    res.sendfile(path.join(__dirname = 'clients/materialui/build/index.html'));  })
+    
+    // Cronjobs
+    let cron = require('./scripts/cron.js').twitter(HOST,PORT);
+
+    app.use(express.static(path.join(__dirname, 'clients/materialui/build')));  
+    app.get('/', (req, res) => {    res.sendfile(path.join(__dirname = 'clients/materialui/build/index.html'));  })
 } else {
     // Static files
-    console.log("Not in prod: ",process.env.NODE_ENV);
+    console.log("Not in prod.");
     app.use('/', require('./routes/index'));
     app.use(express.static('/public'));
 }
-
-// Cronjobs
-const cron = require('./scripts/cron.js').twitter(HOST,PORT);
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

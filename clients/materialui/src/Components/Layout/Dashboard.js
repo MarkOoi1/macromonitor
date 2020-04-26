@@ -7,6 +7,8 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
+import { useSelector } from 'react-redux';
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -59,6 +61,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SimpleTabs() {
+  const prevState = useSelector( state => state);
+  
+  const { selectedRegions } = prevState.configs;
+
+
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -85,7 +92,7 @@ export default function SimpleTabs() {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        Item One
+        You are now viewing data for the region {selectedRegions}
       </TabPanel>
       <TabPanel value={value} index={1}>
         Item Two

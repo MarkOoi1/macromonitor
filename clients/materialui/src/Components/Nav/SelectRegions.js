@@ -1,14 +1,18 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import React, { useState } from 'react';
+import { 
+  makeStyles, 
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  InputLabel,
+  Input,
+  MenuItem,
+  FormControl,
+  Select,
+} from '@material-ui/core'; 
+import { useSelector, useDispatch } from 'react-redux';
+import { setConfig } from '../../Actions/configActions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,46 +40,55 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function SelectRegion(options) {
-  let regions = [];
-  const [state, setState] = React.useState(
-    regions
-  );
+const getRegionsByName = (regions) => regions.map(({name},index,res) => res[index]=name);
 
-  const [open, setOpen] = React.useState(false);
 
-  let regionList = options.regions.regions;
+export default function SelectRegion() {
+  const prevState = useSelector( state => state);
 
+  const regions = [
+    ...prevState.regions
+  ];
+  
+  const { selectedRegions } = prevState.configs;
+  
+  const dispatch = useDispatch();
+
+  const [state, setState] = useState({
+    "open": false
+  });
+
+  const regionList = getRegionsByName(regions);
   const classes = useStyles();
 
   const handleChange = (event) => {
-    setState(event.target.value);
-
+    dispatch(setConfig({selectedRegions: event.target.value}));
   };
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setState({
+      "open": true});
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setState({
+      "open": false});
   };
 
   return (
     <div>
       <div className={classes.headerElements}>
-        <typography>{(state != '') ? state : "Worldwide"}</typography>
+        {(selectedRegions !== '' || selectedRegions !== undefined) ? selectedRegions : "Worldwide"}
         <Button className={classes.button} onClick={handleClickOpen}>Change</Button>
       </div>
-      <Dialog disableBackdropClick disableEscapeKeyDown open={open} onClose={handleClose}>
+      <Dialog disableBackdropClick disableEscapeKeyDown open={state.open} onClose={handleClose}>
         <DialogContent>
-          <form className={classes.container}>
             <FormControl className={classes.formControl}>
               <InputLabel id="demo-dialog-select-label">Region:</InputLabel>
               <Select
                 labelId="demo-dialog-select-label"
                 id="demo-dialog-select"
-                value={(state != '') ? state : "Worldwide"}
+                value={(selectedRegions !== '' || selectedRegions !== undefined) ? selectedRegions : "Worldwide"}
                 onChange={handleChange}
                 input={<Input />}
               >
@@ -83,11 +96,11 @@ export default function SelectRegion(options) {
                   <em>Worldwide</em>
                 </MenuItem>
                 {regionList.map((region, index, arr) => 
-                <MenuItem value={arr[index]}>{arr[index]}</MenuItem>
+                <MenuItem key={index} value={arr[index]}>{arr[index]}</MenuItem>
                 )}
               </Select>
             </FormControl>
-          </form>
+
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
