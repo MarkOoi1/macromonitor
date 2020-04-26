@@ -5,7 +5,6 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
 const path = require('path');
-const favicon = require('express-favicon');
 
 const app = express();
 
@@ -61,8 +60,6 @@ app.use('/api/twitterscraper', require('./routes/api/twitterscraper'));
 app.use('/api/region', require('./routes/api/region'));
 app.use('/api/markets', require('./routes/api/markets'));
 app.use('/api/events', require('./routes/api/events'));
-
-app.use(favicon(__dirname + '/build/images/favicon.ico'));
 
 if(process.env.NODE_ENV === 'production') { 
     console.log(process.env.NODE_ENV);
