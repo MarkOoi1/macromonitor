@@ -3,6 +3,7 @@
 const fs = require('fs');
 const https = require('https');
 const path = require('path');
+var appDir = path.dirname(require.main.filename);
 
 // IG API Model
 const IGmarkets = require('../../models/IGmarkets');
@@ -11,18 +12,18 @@ const Prices = require('../../models/Prices');
 // required for Lighstreamer
 const requirejs = require('requirejs');
 requirejs.config({
-	deps: [__dirname + '../../node_modules/node-ig-api/lib/lightstreamer.js'],
+	deps: [appDir + '/node_modules/node-ig-api/lib/lightstreamer.js'],
 	// v6.2.6 build 1678 - https://labs.ig.com/lightstreamer-downloads
 	// http://www.lightstreamer.com/repo/distros/Lightstreamer_Allegro-Presto-Vivace_6_0_1_20150730.zip%23/Lightstreamer/DOCS-SDKs/sdk_client_javascript/doc/API-reference/index.html
 	nodeRequire: require
 });
 
 // required for IG psw encryption
-require('../../node_modules/node-ig-api/lib/seedrandom');
-require('../../node_modules/node-ig-api/lib/rsa');
-require('../../node_modules/node-ig-api/lib/asn1');
-const pidCrypt = require('../../node_modules/node-ig-api/lib');
-const pidCryptUtil = require('../../node_modules/node-ig-api/lib/pidcrypt_util');
+require(appDir + '/node_modules/node-ig-api/lib/seedrandom');
+require(appDir + '/node_modules/node-ig-api/lib/rsa');
+require(appDir + '/node_modules/node-ig-api/lib/asn1');
+const pidCrypt = require(appDir + '/node_modules/node-ig-api/lib');
+const pidCryptUtil = require(appDir + '/node_modules/node-ig-api/lib/pidcrypt_util');
 
 var lsClient;
 var subscription;
