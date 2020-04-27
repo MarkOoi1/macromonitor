@@ -11,6 +11,9 @@ const MarketSchema = new mongoose.Schema({
     },
     description: {
         type: String
+    },
+    epic: {
+        type: String
     }
 });
 
