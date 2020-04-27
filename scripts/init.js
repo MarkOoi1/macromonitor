@@ -32,18 +32,18 @@ function addMarketids( name, marketObjId, objArr ) {
 
 // Markets: Load up the pre-defined data
 var marketsArr = [
-    {name: 'ASX200', type: 'Equities', description: ''},
-    {name: 'Dow30', type: 'Equities', description: ''},
-    {name: 'S&P500', type: 'Equities', description: ''},
-    {name: 'Spot Gold', type: 'Commodities', description: ''},
-    {name: 'Brent Oil', type: 'Commodities', description: ''},
-    {name: 'Crude Oil', type: 'Commodities', description: ''},
-    {name: 'EURUSD', type: 'FX', description: ''},
-    {name: 'GBPUSD', type: 'FX', description: ''},
-    {name: 'AUDUSD', type: 'FX', description: ''},
-    {name: 'USDJPY', type: 'FX', description: ''},
-    {name: 'EURJPY', type: 'FX', description: ''},
-    {name: 'AUDJPY', type: 'FX', description: ''}
+    {name: 'ASX200', type: 'Equities', description: '', epic: 'IX.D.ASX.IFT.IP'},
+    {name: 'Dow30', type: 'Equities', description: '', epic: 'IX.D.DOW.IFA.IP'},
+    {name: 'S&P500', type: 'Equities', description: '', epic: 'IX.D.SPTRD.IFA.IP'},
+    {name: 'Spot Gold', type: 'Commodities', description: '', epic: 'CS.D.CFAGOLD.CFA.IP'},
+    {name: 'Brent Oil', type: 'Commodities', description: '', epic: 'CC.D.LCO.UMA.IP'},
+    {name: 'Crude Oil', type: 'Commodities', description: '', epic: 'CC.D.CL.UMA.IP'},
+    {name: 'EURUSD', type: 'FX', description: '', epic: 'CS.D.EURUSD.MINI.IP'},
+    {name: 'GBPUSD', type: 'FX', description: '', epic: 'CS.D.GBPUSD.MINI.IP'},
+    {name: 'AUDUSD', type: 'FX', description: '', epic: 'CS.D.AUDUSD.MINI.IP'},
+    {name: 'USDJPY', type: 'FX', description: '', epic: 'CS.D.USDJPY.MINI.IP'},
+    {name: 'EURJPY', type: 'FX', description: '', epic: 'CS.D.EURJPY.MINI.IP'},
+    {name: 'AUDJPY', type: 'FX', description: '', epic: 'CS.D.AUDJPY.MINI.IP'}
 ];
 
 // Markets: Loop through array and save to DB.
