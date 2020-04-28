@@ -1,17 +1,16 @@
 # (MM) Macro Monitor
 
-This is a financial markets dashboard using Node.JS, Express, MongoDB and EJS for the template engine.
+This is a financial markets dashboard using Node.JS, Express, React and MongoDB.
 
-Functionality:
-* Session-based authentication with Passport
+Functionality Objectives: (* denotes in progress)
 * Custom built Twitter profile scraper using node-cron to collect the latest news
-* IG Markets API for a live data feed, trade execution
-* Express-ejs for the template engine
+* IG Markets API for a live data feed
+* IG Markets API for automated trade execution*
+* React client
 * NodeJS / Mongo for backend functionality
+* User auth using sessions*
 
 
-TODO:
-* Inefficiencies with the code is assigning vars to all templates when logged in. Like Smarty, there should be a way to specify which bit of content has specific vars assigned to it. Might be a disadvantage of using EJS.
 
 ### Version: 0.0.1
 
