@@ -1,5 +1,11 @@
 'use strict';
 
+/****
+ * Not written by Mark Ooi
+ * NPM node-ig-api customised to suit MM 
+ * 
+ */
+
 const fs = require('fs');
 const https = require('https');
 const path = require('path');
@@ -45,7 +51,10 @@ async function initiateToken() {
 			}
 		})
 		.catch(e => {
-			console.log("error setting env vars: ",e);
+			process.env.IG_TOKENS_EXP = 0;
+			process.env.IG_XST = '';
+			process.env.IG_CST = '';
+			process.env.IG_LIGHTSTREAMER_END_POINT = '';
 		});
 
 		return tokens;
@@ -244,24 +253,22 @@ function login(encryption) {
 							'lightstreamerEndpoint': r.body.lightstreamerEndpoint,
 							'currentAccountId': r.body.currentAccountId
 						});
-						
-						igMarkets.updateOne({_id:1});
 
-						/*
-						tokens.tokens_exp = new Date().getTime() + 43200000; // tokens expire in 12h
-						tokens['x-request-id'] = r.headers['x-request-id'];
-						tokens['x-security-token'] = r.headers['x-security-token'];
-						tokens.cst = r.headers.cst;
-						tokens.lightstreamerEndpoint = r.body.lightstreamerEndpoint;
-						tokens.currentAccountId = r.body.currentAccountId;
-						fs.writeFile(tokensDir, JSON.stringify(tokens), 'utf8', (e) => {
-							if (e) {
-								rej(e);
-							} else {
-								res(r.body);
-							}
-						});
-						*/
+						IGmarkets.find({})
+							.then(res => {
+								if(res.length > 0) {
+									IGmarkets.updateOne({_id:1}, igMarkets);
+									console.log("New IG token saved", res);
+								} else {
+									igMarkets.save();
+									console.log("New IG token inserted");
+								}
+							})
+							.catch(err => {
+								console.log(err);
+
+							});
+						
 					}
 				})
 				.catch(e => {
@@ -280,15 +287,26 @@ function login(encryption) {
 					} else {
 
 						let igMarkets = new IGmarkets({
-							'tokens_exp': new Date().getTime() + 43200000, // tokens expire in 12h
+							'tokens_exp': new Date().getTime() + 43200, // tokens expire in 12h
 							'x-request-id': r.headers['x-request-id'],
 							'x-security-token': r.headers['x-security-token'],
 							'cst': r.headers.cst,
 							'lightstreamerEndpoint': r.body.lightstreamerEndpoint,
 							'currentAccountId': r.body.currentAccountId
 						});
-						
-						igMarkets.updateOne({_id:1});
+
+						IGmarkets.findOne({_id:1},(err,token) => {
+							if(err) {
+								console.log(err);
+								igMarkets.save();
+								console.log("New IG token inserted");
+							} else {
+								IGmarkets.updateOne({_id:1}, igMarkets);
+								console.log("New IG token saved");
+							}
+
+						});
+
 						/*
 						tokens.tokens_exp = new Date().getTime() + 43200000; // tokens expire in 12h
 						tokens['x-request-id'] = r.headers['x-request-id'];
