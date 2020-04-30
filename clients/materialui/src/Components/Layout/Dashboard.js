@@ -42,7 +42,6 @@ function a11yProps(index) {
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    backgroundColor: "#000",
     color: theme.palette.primary.contrastText,
     fontWeight: theme.typography.fontWeightLight,
     margin: theme.spacing(1)
@@ -52,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     backgroundColor: "#111",
     width: '100%',
-
   },
   tab: {
     minWidth: 70,

@@ -1,18 +1,25 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { Header, Dashboard, Footer } from './Layout';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from "../theme";
 
-export default class App extends Component {
+import { Provider } from 'react-redux';
+import store from '../store';
+import { loadUser } from '../Actions/authActions';
 
-  render() {
-    
-    return (
-      <ThemeProvider theme={theme}>
-        <Header />
-        <Dashboard />
-        <Footer />
-      </ThemeProvider>
+export default function App() {
+
+  useEffect(() => {
+    store.dispatch(loadUser());
+  }, []);
+  
+  return (
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <Header />
+          <Dashboard />
+          <Footer />
+        </ThemeProvider>
+      </Provider>
     );
-  }
 }
