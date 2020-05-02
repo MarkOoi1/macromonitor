@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react';
-import { Header, Dashboard, Footer } from './Layout';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
+
+import { Header, Dashboard, Account, Footer } from './Layout';
 import { ThemeProvider } from '@material-ui/core/styles';
 import theme from "../theme";
 
@@ -17,7 +23,18 @@ export default function App() {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <Header />
-          <Dashboard />
+          <Router>
+            <Switch>
+            <Route path="/">
+              <Dashboard />
+            </Route>
+            <Route path="/Account">
+              <Account />
+            </Route>
+          </Switch>
+          
+          </Router>
+          
           <Footer />
         </ThemeProvider>
       </Provider>

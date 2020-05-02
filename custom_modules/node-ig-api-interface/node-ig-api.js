@@ -2,11 +2,10 @@
 
 /****
  * Not written by Mark Ooi
- * NPM node-ig-api customised to suit MM 
+ * NPM node-ig-api with some edits
  * 
  */
 
-const fs = require('fs');
 const https = require('https');
 const path = require('path');
 var appDir = path.dirname(require.main.filename);
@@ -34,34 +33,69 @@ const pidCryptUtil = require(appDir + '/node_modules/node-ig-api/lib/pidcrypt_ut
 var lsClient;
 var subscription;
 
-//var tokensDir = path.join(__dirname, 'tokens.json');
-//var tokens = require(tokensDir);
+/***
+ * (Helper function)
+ * 
+ */
+
+function setEnvVars(token = 0, xst = '', cst = '', ls_endpoint = '') {
+	process.env.IG_TOKENS_EXP = token;
+	process.env.IG_XST = xst;
+	process.env.IG_CST = cst;
+	process.env.IG_LIGHTSTREAMER_END_POINT = ls_endpoint;
+}
+
+/***
+ * (Helper function)
+ * IG auth tokens are saved in the DB. If one exists, but is expired, it is overwritten.
+ * Otherwise, a new one is created.
+ * 
+ */
+
+let tokenExists = true;
+
+async function saveTokenToDB(igMarkets) {
+	
+	if(tokenExists) {
+		console.log("Attempting to update token in DB");
+		return await IGmarkets.updateOne({_id:1}, igMarkets)
+			.then(res => {
+				console.log('Token update result: ',res.nModified);
+			});
+	} else {
+		console.log("Attempting to insert new token in DB");
+		return await igMarkets.save()
+			.then(res => {
+				console.log('Token insert result (id): ',res._id);
+			});
+	}
+}
+
+/***
+ * [First function]
+ * Check the state of the token.
+ * 
+ */
 
 async function initiateToken() {
-	let tokens = await IGmarkets.find({_id:1})
+	return await IGmarkets.find({_id:1})
 		.then(conn => {
-			if(conn) {
-				process.env.IG_TOKENS_EXP = conn[0].tokens_exp;
-				process.env.IG_XST = conn[0]['x-security-token'];
-				process.env.IG_CST = conn[0].cst;
-				process.env.IG_LIGHTSTREAMER_END_POINT = conn[0].lightstreamerEndpoint;
-				//console.log("conn.cst: ",conn[0].cst);
+			if(conn[0].tokens_exp > new Date().getTime() ) {
+				console.log('token valid, continuing');
+				setEnvVars(conn[0].tokens_exp,conn[0]['x-security-token'],conn[0].cst,conn[0].lightstreamerEndpoint);
 			} else {
-				console.log('token not found');
+				console.log('token expired, resetting');
+				setEnvVars();
 			}
+			tokenExists = true;	
 		})
 		.catch(e => {
-			process.env.IG_TOKENS_EXP = 0;
-			process.env.IG_XST = '';
-			process.env.IG_CST = '';
-			process.env.IG_LIGHTSTREAMER_END_POINT = '';
+			console.log('no token found, resetting');
+			setEnvVars();
+			tokenExists = false;
 		});
-
-		return tokens;
 }
-/*
 
-*/
 var demo = process.env.IG_DEMO==='TRUE'?true:false;
 
 var tokensNull = {
@@ -152,21 +186,9 @@ function _pwdEncrypter(password, encryptionKey, timestamp) {
 	return pidCryptUtil.encodeBase64(pidCryptUtil.convertFromHex(rsa.encrypt(password + '|' + timestamp)));
 }
 
-// Get request on ig api
-function get(url, version) {
-	if ([2, 3].indexOf(version) === -1) {
-		version = 1;
-	}
-	let extraHeaders = {
-		'x-security-token': process.env.IG_XST,
-		cst: process.env.IG_CST,
-		'version': version
-	};
-	return _request('GET', url, false, extraHeaders);
-}
 
 // Delete request on ig api
-function del(url, payload, version) {
+function reqMethod(type, url, version, payload) {
 	if ([2, 3].indexOf(version) === -1) {
 		version = 1;
 	}
@@ -174,36 +196,16 @@ function del(url, payload, version) {
 		'x-security-token': process.env.IG_XST,
 		cst: process.env.IG_CST,
 		'version': version,
-		'_method': 'DELETE' // tweek header to bypass ig API issue
 	};
+
+	if(type == 'DELETE') {
+		extraHeaders = {
+			...extraHeaders,
+			'_method': 'DELETE' // tweek header to bypass ig API issue
+		}
+	}
 	// IG API is not able to handle DELETE requests
-	return _request('POST', url, payload, extraHeaders);
-}
-
-// Put request on ig api
-function put(url, payload, version) {
-	if ([2, 3].indexOf(version) === -1) {
-		version = 1;
-	}
-	let extraHeaders = {
-		'x-security-token': process.env.IG_XST,
-		cst: process.env.IG_CST,
-		'version': version
-	};
-	return _request('PUT', url, payload, extraHeaders);
-}
-
-// Post request on ig api
-function post(url, payload, version) {
-	if ([2, 3].indexOf(version) === -1) {
-		version = 1;
-	}
-	let extraHeaders = {
-		'x-security-token': process.env.IG_XST,
-		cst: process.env.IG_CST,
-		'version': version
-	};
-	return _request('POST', url, payload, extraHeaders);
+	return _request(type, url, payload, extraHeaders);
 }
 
 /////////////
@@ -224,9 +226,10 @@ function login(encryption) {
 			'Version': 2
 		};
 		if (encryption) {
-			
+			console.log("Encrypted password. Here is the token expiry: ",process.env.IG_TOKENS_EXP);
 			_request('GET', '/session/encryptionKey') // retrieve encryptionKey and timeStamp for encryption
 				.then(r => {
+
 					if (r.status !== 200) {
 						rej(r);
 						
@@ -254,19 +257,18 @@ function login(encryption) {
 							'currentAccountId': r.body.currentAccountId
 						});
 
-						IGmarkets.find({})
-							.then(res => {
-								if(res.length > 0) {
-									IGmarkets.updateOne({_id:1}, igMarkets);
-									console.log("New IG token saved", res);
-								} else {
-									igMarkets.save();
-									console.log("New IG token inserted");
-								}
-							})
-							.catch(err => {
-								console.log(err);
-
+						// Update the DB
+						saveTokenToDB(igMarkets)
+							.then(result => {
+								// Update the Env Vars
+								setEnvVars(
+									igMarkets.tokens_exp,
+									igMarkets['x-security-token'],
+									igMarkets.cst,
+									igMarkets.lightstreamerEndpoint
+								);
+								console.log("Env token exp val: ",process.env.IG_TOKENS_EXP);
+								res(r.body);
 							});
 						
 					}
@@ -275,58 +277,7 @@ function login(encryption) {
 					rej(e);
 				});
 		} else {
-			let payload = {
-				identifier: process.env.IG_IDENTIFIER,
-				password: process.env.IG_PASSWORD,
-				encryptedPassword: false
-			};
-			_request('POST', '/session', payload, extraHeaders)
-				.then(r => {
-					if (r.status !== 200) {
-						rej(r);
-					} else {
-
-						let igMarkets = new IGmarkets({
-							'tokens_exp': new Date().getTime() + 43200, // tokens expire in 12h
-							'x-request-id': r.headers['x-request-id'],
-							'x-security-token': r.headers['x-security-token'],
-							'cst': r.headers.cst,
-							'lightstreamerEndpoint': r.body.lightstreamerEndpoint,
-							'currentAccountId': r.body.currentAccountId
-						});
-
-						IGmarkets.findOne({_id:1},(err,token) => {
-							if(err) {
-								console.log(err);
-								igMarkets.save();
-								console.log("New IG token inserted");
-							} else {
-								IGmarkets.updateOne({_id:1}, igMarkets);
-								console.log("New IG token saved");
-							}
-
-						});
-
-						/*
-						tokens.tokens_exp = new Date().getTime() + 43200000; // tokens expire in 12h
-						tokens['x-request-id'] = r.headers['x-request-id'];
-						tokens['x-security-token'] = r.headers['x-security-token'];
-						tokens.cst = r.headers.cst;
-						tokens.lightstreamerEndpoint = r.body.lightstreamerEndpoint;
-						tokens.currentAccountId = r.body.currentAccountId;
-						fs.writeFile(tokensDir, JSON.stringify(tokens), 'utf8', (e) => {
-							if (e) {
-								rej(e);
-							} else {
-								res(r.body);
-							}
-						});
-						*/
-					}
-				})
-				.catch(e => {
-					rej(e);
-				});
+			rej("Unencrypted password not accepted");
 		}
 	});
 }
@@ -369,7 +320,7 @@ function switchAcct(accountId) {
 		let payload = {
 			'accountId': accountId
 		};
-		put('/session', payload)
+		reqMethod('PUT', '/session', 0, payload)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -395,7 +346,7 @@ function switchAcct(accountId) {
 //Returns a list of accounts belonging to the logged-in client
 function acctInfo() {
 	return new Promise((res, rej) => {
-		get('/accounts')
+		reqMethod('GET', '/accounts')
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -442,7 +393,7 @@ function acctActivity(from, to, detailed, dealId, pageSize) {
 			pageSize = '&pageSize=' + pageSize;
 		}
 		let qstring = from + to + detailed + dealId + pageSize;
-		get('/history/activity' + qstring, 3)
+		reqMethod('GET', '/history/activity' + qstring, 3)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -485,7 +436,7 @@ function acctTransaction(type, from, to, pageSize, pageNumber) {
 			pageNumber = '&pageNumber=' + pageNumber;
 		}
 		let qstring = type + from + to + pageSize + pageNumber;
-		get('/history/transactions' + qstring, 2)
+		reqMethod('GET', '/history/transactions' + qstring, 2)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -502,7 +453,7 @@ function acctTransaction(type, from, to, pageSize, pageNumber) {
 // List of client-owned applications
 function apiInfo() {
 	return new Promise((res, rej) => {
-		get('/operations/application').
+		reqMethod('GET', '/operations/application').
 		then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -523,7 +474,7 @@ function apiInfo() {
 // Returns all open positions for the active account.
 function showOpenPositions() {
 	return new Promise((res, rej) => {
-		get('/positions')
+		reqMethod('GET', '/positions')
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -562,13 +513,13 @@ function deal(ticket) {
 		if (ticket.limitLevel !== null && ticket.limitDistance !== null) throw new Error('Set only one of limitLevel or limitDistance');
 		if (ticket.stopLevel !== null && ticket.stopDistance !== null) throw new Error('Set only one of stopLevel or stopDistance');
 		let response = {};
-		post('/positions/otc', ticket, 2)
+		reqMethod('POST','/positions/otc', 2, ticket)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
 				} else {
 					response.positions = r.body;
-					return get('/confirms/' + r.body.dealReference);
+					return reqMethod('GET', '/confirms/' + r.body.dealReference);
 				}
 			})
 			.then(r => {
@@ -585,12 +536,12 @@ function editPosition(dial_id, ticket) {
 	// [Constraint: If trailingStop equals false, then DO NOT set trailingStopDistance,trailingStopIncrement]
 	// [Constraint: If trailingStop equals true, then set trailingStopDistance,trailingStopIncrement,stopLevel]
 	return new Promise((res, rej) => {
-		put('/positions/otc/' + dial_id, ticket, 2)
+		reqMethod('PUT', '/positions/otc/' + dial_id, 2, ticket)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
 				} else {
-					return get('/confirms/' + r.body.dealReference);
+					return reqMethod('GET', '/confirms/' + r.body.dealReference);
 				}
 			})
 			.then(r => {
@@ -607,7 +558,7 @@ function closePosition(dealId) {
 	return new Promise((res, rej) => {
 		let temp1 = [];
 		let response = {};
-		get('/positions', 2)
+		reqMethod('GET', '/positions', 2)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -635,7 +586,7 @@ function closePosition(dealId) {
 						'orderType': 'MARKET',
 						'size': temp1[dealId][3]
 					};
-					return del('/positions/otc', ticket);
+					return reqMethod('DELETE', '/positions/otc', 2, ticket);
 				}
 			})
 			.then(r => {
@@ -643,7 +594,7 @@ function closePosition(dealId) {
 					rej(r);
 				} else {
 					response.positions = r.body;
-					return get('/confirms/' + r.body.dealReference);
+					return reqMethod('GET', '/confirms/' + r.body.dealReference);
 				}
 			})
 			.then(r => {
@@ -662,7 +613,7 @@ function closeAllPositions() {
 		let response = [];
 		let tickets = [];
 		let index = 0;
-		get('/positions', 2)
+		reqMethod('GET','/positions', 2)
 			.then(r => {
 				let temp = r.body.positions;
 				if (temp.length === 0)(res('There is no position to close'));
@@ -679,9 +630,9 @@ function closeAllPositions() {
 
 				function _close(index) {
 					if (tickets[index]) {
-						del('/positions/otc', tickets[index])
+						reqMethod('DELETE','/positions/otc', 0, tickets[index])
 							.then(r => {
-								get('/confirms/' + r.body.dealReference)
+								reqMethod('GET', '/confirms/' + r.body.dealReference)
 									.then(r => {
 										if (r.status !== 200) {
 											rej(r);
@@ -714,7 +665,7 @@ function closeAllPositions() {
 // Returns all open working orders for the active account.
 function showWorkingOrders() {
 	return new Promise((res, rej) => {
-		get('/workingorders')
+		reqMethod('GET', '/workingorders')
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -749,12 +700,12 @@ function createOrder(ticket) {
 		if (ticket.level === null) throw new Error('level has to be defined');
 		if (ticket.limitLevel != null && ticket.limitDistance != null) throw new Error('Set only one of limitLevel or limitDistance');
 		if (ticket.stopLevel != null && ticket.stopDistance != null) throw new Error('Set only one of stopLevel or stopDistance');
-		post('/workingorders/otc', ticket, 2)
+		reqMethod('POST','/workingorders/otc', 2, ticket)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
 				} else {
-					return get('/confirms/' + r.body.dealReference);
+					return reqMethod('GET','/confirms/' + r.body.dealReference);
 				}
 			})
 			.then(r => {
@@ -771,13 +722,13 @@ function deleteOrder(dealId) {
 	let response = {};
 	return new Promise((res, rej) => {
 		let close = {};
-		del('/workingorders/otc/' + dealId, close)
+		reqMethod('DELETE', '/workingorders/otc/' + dealId, 0, close)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
 				} else {
 					response.workingorders = r.body;
-					return get('/confirms/' + r.body.dealReference);
+					return reqMethod('GET','/confirms/' + r.body.dealReference);
 				}
 			})
 			.then(r => {
@@ -795,7 +746,7 @@ function deleteAllOrders() {
 		let tickets = [];
 		let index = 0;
 		let close = {};
-		get('/workingorders')
+		reqMethod('GET','/workingorders')
 			.then(r => {
 				let temp = r.body.workingOrders;
 				if (temp.length === 0)(res('There is no order to close'));
@@ -805,9 +756,9 @@ function deleteAllOrders() {
 
 				function _close(index) {
 					if (tickets[index]) {
-						del('/workingorders/otc/' + tickets[index], close)
+						reqMethod('/workingorders/otc/' + tickets[index], 0, close)
 							.then(r => {
-								get('/confirms/' + r.body.dealReference)
+								reqMethod('GET','/confirms/' + r.body.dealReference)
 									.then(r => {
 										if (r.status !== 200) {
 											rej(r);
@@ -845,7 +796,7 @@ function search(searchTerm) {
 			'x-security-token': process.env.IG_XST,
 			cst: process.env.IG_CST
 		};
-		get('/markets?searchTerm=' + searchTerm, false, extraHeaders)
+		reqMethod('GET','/markets?searchTerm=' + searchTerm, false, extraHeaders)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -868,7 +819,7 @@ function igVolume(epics) {
 			qstringEpics = qstringEpics + epic + '%2c';
 		});
 		qstringEpics = qstringEpics.slice(0, qstringEpics.length - 3);
-		get('/markets' + qstringEpics)
+		reqMethod('GET','/markets' + qstringEpics)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -879,7 +830,7 @@ function igVolume(epics) {
 						qstringMaketId = qstringMaketId + marketDetails[i].instrument.marketId + '%2c';
 					}
 					qstringMaketId = qstringMaketId.slice(0, qstringMaketId.length - 3);
-					return get('/clientsentiment' + qstringMaketId);
+					return reqMethod('GET','/clientsentiment' + qstringMaketId);
 				}
 			})
 			.then(r => {
@@ -895,7 +846,7 @@ function igVolume(epics) {
 function marketNode(id) {
 	return new Promise((res, rej) => {
 		let url = typeof(id) === 'undefined' ? '/marketnavigation' : '/marketnavigation/' + id;
-		get(url)
+		reqMethod('GET', url)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -922,7 +873,7 @@ function histPrc(epic, resolution, from, to) {
 	 */
 
 	return new Promise((res, rej) => {
-		get('/prices/' + epic + '?resolution=' + resolution + '&startdate=' + from + '&to=' + to, 3)
+		reqMethod('GET', '/prices/' + epic + '?resolution=' + resolution + '&startdate=' + from + '&to=' + to, 3)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -948,7 +899,7 @@ function epicDetails(epics) {
 			qstringEpics = qstringEpics + epic + '%2c';
 		});
 		qstringEpics = qstringEpics.slice(0, qstringEpics.length - 3);
-		get('/markets' + qstringEpics)
+		reqMethod('GET', '/markets' + qstringEpics)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -970,7 +921,7 @@ function epicDetails(epics) {
 function watchlists(id) {
 	return new Promise((res, rej) => {
 		if (typeof(id) === 'undefined') {
-			get('/watchlists')
+			reqMethod('GET', '/watchlists')
 				.then(r => {
 					if (r.status !== 200) {
 						rej(r);
@@ -982,7 +933,7 @@ function watchlists(id) {
 					rej(e);
 				});
 		} else {
-			get('/watchlists/' + id)
+			reqMethod('GET','/watchlists/' + id)
 				.then(r => {
 					if (r.status !== 200) {
 						rej(r);
@@ -1004,7 +955,7 @@ function createWatchlist(name, epics) {
 			'epics': epics,
 			'name': name
 		};
-		post('/watchlists', payload)
+		reqMethod('POST','/watchlists',0, payload)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -1022,7 +973,7 @@ function createWatchlist(name, epics) {
 function deleteWatchlist(id) {
 	return new Promise((res, rej) => {
 		let payload = {};
-		del('/watchlists/' + id, payload)
+		reqMethod('/watchlists/' + id, 0, payload)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -1042,7 +993,7 @@ function addEpicWatchlist(epic, watchlistID) {
 		let payload = {
 			'epic': epic
 		};
-		put('/watchlists/' + watchlistID, payload)
+		reqMethod('PUT', '/watchlists/' + watchlistID, 0, payload)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -1060,7 +1011,7 @@ function addEpicWatchlist(epic, watchlistID) {
 function removeEpicWatchlist(epic, watchlistID) {
 	return new Promise((res, rej) => {
 		let payload = {};
-		del('/watchlists/' + watchlistID + '/' + epic, payload)
+		reqMethod('DELETE', '/watchlists/' + watchlistID + '/' + epic, 0, payload)
 			.then(r => {
 				if (r.status !== 200) {
 					rej(r);
@@ -1103,6 +1054,7 @@ function connectToLightstreamer() {
 			},
 			onServerError: (errorCode, errorMessage) => {
 				console.log('Lightstreamer error: ' + errorCode + ' message: ' + errorMessage);
+				connectToLightstreamer();
 			}
 		});
 
@@ -1217,10 +1169,7 @@ function subscribeToLightstreamer(subscriptionMode, items, fields, maxFreq) {
 }
 
 module.exports = {
-	get: get,
-	del: del,
-	put: put,
-	post: post,
+	reqMethod: reqMethod,
 	login: login,
 	logout: logout,
 	switchAcct: switchAcct,
