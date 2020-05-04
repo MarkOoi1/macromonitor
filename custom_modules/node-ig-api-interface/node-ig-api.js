@@ -1093,11 +1093,6 @@ function subscribeToLightstreamer(subscriptionMode, items, fields, maxFreq) {
 
 		subscription.setRequestedMaxFrequency(maxFreq);
 
-			var timePoint;
-			// Analyse price action 
-			var sma5;
-
-
 			// Set up Lightstreamer event listener
 			subscription.addListener({
 
@@ -1121,7 +1116,6 @@ function subscribeToLightstreamer(subscriptionMode, items, fields, maxFreq) {
 					var coeff = 1000 * 60 * 1;
 					var date = new Date();  //or use any other date
 					var rounded = new Date(Math.round(date.getTime() / coeff) * coeff);
-					rounded = rounded/1000;
 					str = {
 						epic_settings: updateInfo.By
 					};
@@ -1140,22 +1134,14 @@ function subscribeToLightstreamer(subscriptionMode, items, fields, maxFreq) {
 					
 					let price = new Prices(str);
 
-					if(timePoint == rounded) {
 
-						price.updateOne(
-							{minute: rounded}, 
-							{'$set': str
-						});
-						console.log(`${rounded}: updated ${str.BID_OPEN}|${str.BID_HIGH}|${str.BID_LOW}|${str.BID_CLOSE} into ${str.epic_settings}`);
-					} else {
+					//console.log(price);
+					if(str.CONS_END == true) {
 						str["minute"] = rounded;
 
 						price.save(str);
-						console.log(`${str.minute}: inserted ${str.BID_OPEN}|${str.BID_HIGH}|${str.BID_LOW}|${str.BID_CLOSE} into ${str.epic_settings}`);
-						timePoint = rounded;
-
+						console.log(`(UTM ${str.UTM}): inserted ${str.BID_CLOSE} into ${str.epic_settings}. CONS: ${str['CONS_END']}`);
 					}
-
 
 				}
 			});

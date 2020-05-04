@@ -1,7 +1,5 @@
-import Logout from './Logout';
-import RegisterModal from './RegisterModal';
-import LoginModal from './LoginModal';
+import Logout from "./Logout";
+import RegisterModal from "./RegisterModal";
+import Login from "./Login";
 
-export {
-  LoginModal, Logout, RegisterModal
-};
+export { Login, Logout, RegisterModal };

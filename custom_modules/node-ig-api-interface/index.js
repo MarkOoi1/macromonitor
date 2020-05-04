@@ -17,9 +17,13 @@ let items =markets.then(arr => {
 const igConnection = new Promise((resolve, reject) => {
   ig.initiateToken()
   .then(res => {
-    ig.login(true).then(r => console.log(util.inspect(r.accountType, false, null))).catch(e => console.log(e));
-    ig.acctInfo().then(r => console.log(util.inspect(r, false, null))).catch(e => console.log(e));
-    resolve(res);
+    ig.login(true)
+      .then(r => {
+        console.log(util.inspect(r.accountType, false, null));
+        resolve(res);
+      })
+      .catch(e => console.log(e));
+    
   })
   .catch(err => {
     console.log("Error initiating token ", err);
