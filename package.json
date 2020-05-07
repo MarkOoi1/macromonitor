@@ -4,12 +4,12 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
-    "start": "npm run build && node --inspect ./build/index.js",
+    "start": "node ./build/index.js",
     "dev": "concurrently \"nodemon --exec babel-node ./server/index.js\" \"npm start --prefix ./clients/materialui\"",
     "heroku-postbuild": "npm install --prefix ./clients/materialui && npm run build --prefix ./clients/materialui",
     "build": "npm run clean && npm run babel-build",
     "babel-build": "babel -d ./build ./server -s",
-    "clean": "rm -rf && mkdir build"
+    "clean": "mkdir build"
   },
   "author": "Mark Ooi",
   "license": "MIT",
