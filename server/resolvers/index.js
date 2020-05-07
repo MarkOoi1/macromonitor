@@ -1,7 +1,9 @@
-import Region from "../models/Region";
+const Region = require("../models/Region");
 
-export const resolvers = {
+const resolvers = {
   Query: {
     regions: () => Region.find(),
   },
 };
+
+module.exports = resolvers;

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // Item Model
-import Region from "../../models/Region";
+const Region = require("../../models/Region");
 
 // @route   GET api/region
 // @desc    Get All Items

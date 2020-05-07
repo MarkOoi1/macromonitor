@@ -1,12 +1,11 @@
-import "regenerator-runtime/runtime.js";
-import express from "express";
-import mongoose from "mongoose";
-import path from "path";
-import config from "config";
+const express = require("express");
+const mongoose = require("mongoose");
+const path = require("path");
+const config = require("config");
 
-import { ApolloServer } from "apollo-server-express";
-import { resolvers } from "./resolvers";
-import { typeDefs } from "./typeDefs";
+const { ApolloServer } = require("apollo-server-express");
+const resolvers = require("./resolvers");
+const typeDefs = require("./typeDefs");
 
 require("dotenv").config();
 

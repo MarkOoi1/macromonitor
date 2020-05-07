@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const RegionSchema = new mongoose.Schema({
   name: {
@@ -17,4 +17,4 @@ const RegionSchema = new mongoose.Schema({
 
 const Region = mongoose.model("Region", RegionSchema);
 
-export default Region;
+module.exports = Region;

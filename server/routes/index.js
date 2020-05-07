@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 // Welcome page
-router.get("/", (req, res) => res.status(200).send("welcome"));
+router.get("/", (req, res) =>
+  res.send("welcome", {
+    req: req,
+  })
+);
 
 module.exports = router;
