@@ -7,7 +7,7 @@ import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 
-import { Header, Footer } from "./";
+import { Header, Footer, Greeting } from "./";
 import Overview from "./Overview";
 
 function TabPanel(props) {
@@ -58,9 +58,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SimpleTabs() {
+export default function Dashboard(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
+  let welcomemsg = props.location.state.welcomemsg;
+
+  console.log("welcomemsg: ", props.location.state.welcomemsg);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -114,6 +117,8 @@ export default function SimpleTabs() {
           Item Five
         </TabPanel>
       </div>
+      {welcomemsg ? <Greeting /> : null}
+
       <Footer />
     </>
   );

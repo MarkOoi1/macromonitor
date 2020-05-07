@@ -227,7 +227,12 @@ export default function LetterAvatars() {
           )}
           <Divider variant="middle" />
         </div>
-        <Link to="/account" className={classes.buttonLeft}>
+        <Link
+          component="button"
+          variant="body2"
+          to="/account"
+          className={classes.buttonLeft}
+        >
           Profile Settings
         </Link>
         <Button className={classes.buttonRight} onClick={handleClose}>

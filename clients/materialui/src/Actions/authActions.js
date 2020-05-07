@@ -9,6 +9,7 @@ import {
   LOGOUT_SUCCESS,
   REGISTER_SUCCESS,
   REGISTER_FAIL,
+  ENABLE_WELCOME,
 } from "./types";
 
 // Check token and load user
@@ -18,11 +19,18 @@ export const loadUser = () => async (dispatch, getState) => {
 
   axios
     .get("/api/auth/user", tokenConfig(getState))
-    .then((res) => {
+    .then((res) =>
       dispatch({
         type: USER_LOADED,
         payload: res.data,
-      });
+      })
+    )
+    .then((res) => {
+      if (res.payload.welcomemsg) {
+        dispatch({
+          type: ENABLE_WELCOME,
+        });
+      }
     })
     .catch((err) => {
       dispatch(returnErrors(err.response.data, err.response.status));
@@ -44,12 +52,15 @@ export const register = ({ name, email, password, google }) => (dispatch) => {
 
   axios
     .post("/api/users", body, config)
-    .then((res) =>
+    .then((res) => {
       dispatch({
         type: REGISTER_SUCCESS,
         payload: res.data,
-      })
-    )
+      });
+      dispatch({
+        type: ENABLE_WELCOME,
+      });
+    })
     .catch((err) => {
       dispatch(
         returnErrors(err.response.data, err.response.status, "REGISTER_FAIL")

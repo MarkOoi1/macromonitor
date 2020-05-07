@@ -120,7 +120,7 @@ function Login() {
     }
     console.log("auth in Login: ", auth.isAuthenticated);
     if (auth.isAuthenticated === true) {
-      history.push("/dashboard");
+      history.push("/dashboard", { welcomemsg: auth.user.welcomemsg });
     }
   }, [auth]);
 

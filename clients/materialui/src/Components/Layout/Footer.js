@@ -1,10 +1,11 @@
-import React from 'react';
+import React from "react";
+import Idea from "./Idea";
 
-export default () => {
-
+export default function Footer() {
   return (
-  <div>
-    Footer
-  </div>
-  )
-};
+    <div>
+      Footer
+      <Idea />
+    </div>
+  );
+}

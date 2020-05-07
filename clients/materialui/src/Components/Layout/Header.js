@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 
 import SelectRegion from "../Nav/SelectRegions";
-import ProfileMenu from "./ProfileMenu";
+import { ProfileMenu } from "./";
 
 const useStyles = makeStyles((theme) => ({
   header: {
