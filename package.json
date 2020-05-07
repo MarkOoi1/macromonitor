@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
-    "start": "node ./build/index.js",
+    "start": "node ./server/index.js",
     "dev": "concurrently \"nodemon --exec babel-node ./server/index.js\" \"npm start --prefix ./clients/materialui\"",
     "heroku-postbuild": "npm install --prefix ./clients/materialui && npm run build --prefix ./clients/materialui",
     "build": "npm run clean && npm run babel-build",
