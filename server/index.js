@@ -64,10 +64,13 @@ if (process.env.NODE_ENV === "production") {
   // Cronjobs
   let cron = require("./scripts/cron.js").twitter(HOST, PORT);
 
-  app.use(express.static(path.join(__dirname, "clients/materialui/build")));
+  // IG Markets price feed
+  require("./custom_modules/node-ig-api-interface");
+
+  app.use(express.static(path.join(__dirname, "/../clients/materialui/build")));
   app.get("/", (req, res) => {
     res.sendfile(
-      path.join((__dirname = "clients/materialui/build/index.html"))
+      path.join((__dirname = "/../clients/materialui/build/index.html"))
     );
   });
 } else {
@@ -76,8 +79,5 @@ if (process.env.NODE_ENV === "production") {
   app.use("/", require("./routes/index"));
   app.use(express.static("/public"));
 }
-
-// IG Markets price feed
-require("./custom_modules/node-ig-api-interface");
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

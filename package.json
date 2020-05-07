@@ -2,7 +2,7 @@
   "name": "macromonitor",
   "version": "1.0.0",
   "description": "",
-  "main": "server/index.js",
+  "main": "./server/index.js",
   "scripts": {
     "start": "node ./server/index.js",
     "dev": "concurrently \"nodemon ./server/index.js\" \"npm start --prefix ./clients/materialui\"",
