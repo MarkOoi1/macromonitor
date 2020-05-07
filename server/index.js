@@ -1,3 +1,4 @@
+import "regenerator-runtime/runtime.js";
 import express from "express";
 import mongoose from "mongoose";
 import path from "path";
