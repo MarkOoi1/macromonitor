@@ -9,7 +9,7 @@
     "heroku-postbuild": "npm install --prefix ./clients/materialui && npm run build --prefix ./clients/materialui",
     "build": "npm run clean && npm run babel-build",
     "babel-build": "babel -d ./build ./server -s",
-    "clean": "rmdir -Rf && mkdir build"
+    "clean": "rm -rf && mkdir build"
   },
   "author": "Mark Ooi",
   "license": "MIT",
