@@ -1,16 +1,17 @@
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
-const config = require("config");
 
 const { ApolloServer } = require("apollo-server-express");
 const resolvers = require("./resolvers");
 const typeDefs = require("./typeDefs");
 
-require("dotenv").config();
-
 const app = express();
 const cors = require("cors");
+
+const config = require("../config/keys");
 
 app.use(express.json());
 
@@ -25,9 +26,8 @@ const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || "localhost";
 
 // DB Config
-
 const startDBServer = async () => {
-  const db = config.get("mongoURI");
+  const db = config.mongoURI;
   // Connect to Mongo
   await mongoose.connect(db, {
     useNewUrlParser: true,
@@ -35,9 +35,11 @@ const startDBServer = async () => {
   });
 };
 
-startDBServer().then((res) => {
-  console.log(`MongoDB connected for ${__filename}...`);
-});
+startDBServer()
+  .then((res) => {
+    console.log(`MongoDB connected for ${__filename}...`);
+  })
+  .catch((err) => console.log(err));
 
 // Use Routes
 app.use("/api/twitterscraper", require("./routes/api/twitterscraper"));
