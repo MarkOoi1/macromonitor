@@ -66,7 +66,12 @@ if (process.env.NODE_ENV === "production") {
   // IG Markets price feed
   require("./custom_modules/node-ig-api-interface");
 }
-app.use("/", require("./routes/index"));
-app.use(express.static("/../clients/materialui/build/index.html"));
+
+app.use(express.static("/../clients/materialui/build/static"));
+app.get("*", (req, res) => {
+  res.sendFile(
+    path.resolve(__dirname, "../clients/materialui", "build", "index.html")
+  );
+});
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
