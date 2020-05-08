@@ -67,11 +67,9 @@ if (process.env.NODE_ENV === "production") {
   require("./custom_modules/node-ig-api-interface");
 }
 
-app.use(express.static("/../clients/materialui/public"));
+app.use(express.static("public"));
 app.get("*", (req, res) => {
-  res.sendFile(
-    path.resolve(__dirname, "../clients/materialui", "public", "index.html")
-  );
+  res.sendFile(path.resolve(__dirname, "..", "public", "index.html"));
 });
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
