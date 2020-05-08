@@ -67,10 +67,10 @@ if (process.env.NODE_ENV === "production") {
   require("./custom_modules/node-ig-api-interface");
 }
 
-app.use(express.static("/../clients/materialui/build/static"));
+app.use(express.static("/../clients/materialui/public"));
 app.get("*", (req, res) => {
   res.sendFile(
-    path.resolve(__dirname, "../clients/materialui", "build", "index.html")
+    path.resolve(__dirname, "../clients/materialui", "public", "index.html")
   );
 });
 
