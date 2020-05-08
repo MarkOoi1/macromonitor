@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node ./server/index.js",
     "dev": "concurrently \"nodemon ./server/index.js\" \"npm start --prefix ./clients/materialui\"",
-    "clientbuild": "npm run build --prefix ./clients/materialui"
+    "clientbuild": "npm run build --prefix ./clients/materialui",
+    "heroku-postbuild": "npm install --prefix ./clients/materialui && npm run build --prefix ./clients/materialui"
   },
   "author": "Mark Ooi",
   "license": "MIT",
