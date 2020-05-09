@@ -63,8 +63,6 @@ export default function Dashboard(props) {
   const [value, setValue] = React.useState(0);
   let welcomemsg = props.location.state.welcomemsg;
 
-  console.log("welcomemsg: ", props.location.state.welcomemsg);
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

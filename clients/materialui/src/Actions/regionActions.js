@@ -1,5 +1,4 @@
 import { GET_REGIONS, SET_REGIONS } from "./types";
-import gql from "graphql-tag";
 
 export const getRegions = () => {
   return {

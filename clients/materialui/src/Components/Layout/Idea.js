@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 
 import clsx from "clsx";
@@ -41,8 +40,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Idea() {
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
   const classes = useStyles();
   const [state, setState] = React.useState({
     top: false,
@@ -73,7 +70,7 @@ export default function Idea() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       {["Create a Theme", "Analyse Tactics", "Review"].map((text, index) => (
-        <Card className={classes.cardroot}>
+        <Card className={classes.cardroot} key={index}>
           <CardActionArea>
             <CardMedia
               className={classes.media}

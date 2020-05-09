@@ -5,8 +5,8 @@ const mongoose = require("mongoose");
 const path = require("path");
 
 const { ApolloServer } = require("apollo-server-express");
-const resolvers = require("./resolvers");
-const typeDefs = require("./typeDefs");
+const resolvers = require("./api/resolvers");
+const typeDefs = require("./api/typeDefs");
 
 const app = express();
 const cors = require("cors");
@@ -41,17 +41,6 @@ startDBServer()
   })
   .catch((err) => console.log(err));
 
-// Use Routes
-app.use("/api/twitterscraper", require("./routes/api/twitterscraper"));
-
-// Routes: for client
-app.use("/api/region", require("./routes/api/region"));
-app.use("/api/markets", require("./routes/api/markets"));
-app.use("/api/events", require("./routes/api/events"));
-app.use("/api/users", require("./routes/api/users"));
-app.use("/api/auth", require("./routes/api/auth"));
-app.use("/api/theme", require("./routes/api/theme"));
-
 // GraphQL API
 const server = new ApolloServer({
   typeDefs,
@@ -59,6 +48,16 @@ const server = new ApolloServer({
 });
 
 server.applyMiddleware({ app });
+
+// Use Routes
+app.use("/api/twitterscraper", require("./routes/api/twitterscraper"));
+
+// Routes: for client
+app.use("/api/region", require("./routes/api/region"));
+app.use("/api/markets", require("./routes/api/markets"));
+app.use("/api/users", require("./routes/api/users"));
+app.use("/api/auth", require("./routes/api/auth"));
+app.use("/api/theme", require("./routes/api/theme"));
 
 if (process.env.NODE_ENV === "production") {
   console.log(process.env.NODE_ENV);

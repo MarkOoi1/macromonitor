@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
@@ -118,10 +118,11 @@ function Login() {
       setMsg(null);
       dispatch(clearErrors());
     }
-    console.log("auth in Login: ", auth.isAuthenticated);
+    console.log("auth at Login: ", auth.isAuthenticated);
     if (auth.isAuthenticated === true) {
       history.push("/dashboard", { welcomemsg: auth.user.welcomemsg });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth]);
 
   const responseGoogle = (response) => {

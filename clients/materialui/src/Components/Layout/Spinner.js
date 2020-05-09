@@ -28,8 +28,6 @@ const Spinner = () => {
   const classes = useStyles();
   let auth = useSelector((state) => state.auth);
 
-  console.log("spinner: ", auth);
-
   return (
     <div className={auth.isLoading ? classes.root : classes.loaded}>
       <div className={classes.loader}>

@@ -1,10 +1,11 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import React from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
+import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 
-import { logout } from '../../Actions/authActions';
+import { logout } from "../../Actions/authActions";
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -12,20 +13,31 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
     float: "right",
     display: "inline",
-  }
+  },
 }));
 
-
 export default function Logout() {
+  const classes = useStyles();
+
+  const history = useHistory();
   const dispatch = useDispatch();
 
-  const classes = useStyles();
+  const handleLogout = () => {
+    dispatch(logout());
+    history.push("/");
+  };
 
   return (
     <div>
-      <Button className={classes.button} variant="contained" color="primary" type="button" onClick={() => dispatch(logout())}>
-      Logout
+      <Button
+        className={classes.button}
+        variant="contained"
+        color="primary"
+        type="button"
+        onClick={() => handleLogout()}
+      >
+        Logout
       </Button>
     </div>
-  )
+  );
 }

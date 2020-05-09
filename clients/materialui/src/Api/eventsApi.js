@@ -1,14 +1,11 @@
-import axios from 'axios';
+import axios from "axios";
+import gql from "graphql-tag";
 
-export const getAllEvents = async () => {
+export default EVENTS_QUERY;
+/*
+export const getAllEvents = () => {
 
-  try {
-    let {data} = await axios.get('/api/events');
-    return data;
-  } catch(e) {
-    console.log(e);
-  }
-  
 
-  
+  return EVENTS_QUERY;
 };
+*/
