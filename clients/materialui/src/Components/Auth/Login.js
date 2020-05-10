@@ -116,7 +116,7 @@ function Login() {
       setMsg(error.msg.msg);
     } else {
       setMsg(null);
-      dispatch(clearErrors());
+      if (!error) dispatch(clearErrors());
     }
     console.log("auth at Login: ", auth.isAuthenticated);
     if (auth.isAuthenticated === true) {

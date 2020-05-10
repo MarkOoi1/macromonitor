@@ -1,5 +1,7 @@
 import React, { useState, useCallback, useEffect, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import gql from "graphql-tag";
+import { useMutation } from "@apollo/react-hooks";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
@@ -48,6 +50,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const REGISTER_MUTATION = gql`
+  mutation RegisterUser($name: String!, $email: String!, $google: String) {
+    register(registerInput: { name: $name, email: $email, google: $google }) {
+      token
+      user {
+        name
+        email
+        date
+        welcomemsg
+        complete
+      }
+    }
+  }
+`;
+
 function RegisterModal() {
   const dispatch = useDispatch();
 
@@ -57,6 +74,16 @@ function RegisterModal() {
 
   const [modal, setModal] = useState(false);
   const [msg, setMsg] = useState(null);
+
+  const [registerUser] = useMutation(REGISTER_MUTATION, {
+    update(proxy, result) {
+      dispatch(register(true, result));
+    },
+    onError(err) {
+      dispatch(register(false, err.graphQLErrors[0].extensions.errors));
+      setMsg(err.graphQLErrors[0].extensions.errors);
+    },
+  });
 
   const classes = useStyles();
 
@@ -69,25 +96,17 @@ function RegisterModal() {
 
   const responseGoogle = (response) => {
     if (response.profileObj.name) {
-      const userGoogle = {
-        name: response.profileObj.name,
-        email: response.profileObj.email,
-        google: response.accessToken,
-      };
-
-      dispatch(register(userGoogle));
+      registerUser({
+        variables: {
+          name: response.profileObj.name,
+          email: response.profileObj.email,
+          google: response.accessToken,
+        },
+      });
     }
   };
 
   useEffect(() => {
-    // Check for login error
-
-    if (error.id === "REGISTER_FAIL") {
-      setMsg(error.msg.msg);
-    } else {
-      setMsg(null);
-    }
-
     // If authenticated, close modal
     if (modal) {
       if (isAuthenticated) {
@@ -96,7 +115,7 @@ function RegisterModal() {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error, modal, isAuthenticated]);
+  }, [error, modal, isAuthenticated, msg]);
 
   return (
     <Fragment>
@@ -128,7 +147,7 @@ function RegisterModal() {
               <CloseIcon />
             </IconButton>
             <h3 id="transition-modal-title">Create Account</h3>
-            <p>{msg ? msg : ""}</p>
+            <p>{msg ? msg : <br />}</p>
 
             <GoogleLogin
               clientId="740760002749-cmc0elsac0nm02tss8tvejs0nppsb0vl.apps.googleusercontent.com"

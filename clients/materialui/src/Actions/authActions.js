@@ -39,36 +39,21 @@ export const loadUser = () => async (dispatch, getState) => {
 };
 
 // Register User
-export const register = ({ name, email, password, google }) => (dispatch) => {
-  // request headers
-  const config = {
-    headers: {
-      "Content-type": "application/json",
-    },
-  };
-
-  // Request body
-  const body = JSON.stringify({ name, email, password, google });
-
-  axios
-    .post("/api/users", body, config)
-    .then((res) => {
-      dispatch({
-        type: REGISTER_SUCCESS,
-        payload: res.data,
-      });
-      dispatch({
-        type: ENABLE_WELCOME,
-      });
-    })
-    .catch((err) => {
-      dispatch(
-        returnErrors(err.response.data, err.response.status, "REGISTER_FAIL")
-      );
-      dispatch({
-        type: REGISTER_FAIL,
-      });
+export const register = (success, payload) => (dispatch) => {
+  if (success) {
+    dispatch({
+      type: REGISTER_SUCCESS,
+      payload: payload.data.register,
     });
+    dispatch({
+      type: ENABLE_WELCOME,
+    });
+  } else {
+    dispatch(returnErrors(payload, 401, "REGISTER_FAIL"));
+    dispatch({
+      type: REGISTER_FAIL,
+    });
+  }
 };
 
 // Login User

@@ -14,11 +14,6 @@ import Paper from "@material-ui/core/Paper";
 
 import Moment from "react-moment";
 
-/*
-import io from 'socket.io-client';
-const socket = io('http://localhost:5000');
-*/
-
 const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,

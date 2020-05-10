@@ -8,8 +8,9 @@ Functionality Objectives: (\* denotes in progress)
 - IG Markets API for a live data feed
 - IG Markets API for automated trade execution\*
 - React client with Redux for state management
+- Material UI for presentation
 - NodeJS / Mongo for backend functionality
-- User auth using JWT
+- User auth using JWT, Google OATH
 - Server / Client comms via GraphQL and REST APIs
 
 ### Version: 0.0.1
@@ -25,10 +26,18 @@ $ npm start
 # Or run with Nodemon
 $ npm run dev
 
-# Visit http://localhost:5000
+# Visit http://localhost:3000
 ```
 
 ### MongoDB
 
-Open "config/keys.js" and add your MongoDB URI, local or Atlas
+Set the following ENV VARS:
+IG_API_KEY
+IG_IDENTIFIER
+IG_PASSWORD
+IG_DEMO
+DB_USER
+DB_PASS
+JWTSecret
+
 Run ./scripts/init.js to pre-populate the DB.

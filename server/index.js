@@ -55,7 +55,6 @@ app.use("/api/twitterscraper", require("./routes/api/twitterscraper"));
 // Routes: for client
 app.use("/api/region", require("./routes/api/region"));
 app.use("/api/markets", require("./routes/api/markets"));
-app.use("/api/users", require("./routes/api/users"));
 app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/theme", require("./routes/api/theme"));
 
