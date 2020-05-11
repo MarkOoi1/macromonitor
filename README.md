@@ -32,6 +32,8 @@ $ npm run dev
 ### MongoDB
 
 Set the following ENV VARS:
+
+```sh
 IG_API_KEY
 IG_IDENTIFIER
 IG_PASSWORD
@@ -39,5 +41,6 @@ IG_DEMO
 DB_USER
 DB_PASS
 JWTSecret
+```
 
 Run ./scripts/init.js to pre-populate the DB.
