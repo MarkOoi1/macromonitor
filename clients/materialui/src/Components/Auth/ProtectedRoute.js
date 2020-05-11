@@ -14,7 +14,12 @@ export const ProtectedRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={(props) => {
-        if (authent.isAuthenticated === null) {
+        if (authent.isAuthenticated === null && authent.token) {
+          return <Spinner />;
+        }
+
+        if (authent.isAuthenticated === null && !authent.token) {
+          console.log("came through here1");
           return (
             <Redirect
               to={{

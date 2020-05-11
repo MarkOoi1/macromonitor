@@ -1,17 +1,20 @@
 # (MM) Macro Monitor
 
-This is a financial markets dashboard using Node.JS, Express, React and MongoDB.
+MERNG w/ Redux and Material UI
+Designed to deploy on Heroku. You can use any cloud MongoDB service, just update the connection string.
 
-Functionality Objectives: (\* denotes in progress)
+Technology Goals:
 
-- Custom built Twitter profile scraper using node-cron to collect the latest news
-- IG Markets API for a live data feed
-- IG Markets API for automated trade execution\*
+- Data sourcing via Twitter on real-time news breaks
+- Data sourcing for economic data releases
+- IG Markets API for a live data feed on selected markets
+- IG Markets API for automated trade execution
 - React client with Redux for state management
 - Material UI for presentation
 - NodeJS / Mongo for backend functionality
 - User auth using JWT, Google OATH
 - Server / Client comms via GraphQL and REST APIs
+- Connection to the Theme library
 
 ### Version: 0.0.1
 
@@ -22,8 +25,8 @@ $ npm install
 ```
 
 ```sh
-$ npm start
-# Or run with Nodemon
+
+# Development: Run with Nodemon
 $ npm run dev
 
 # Visit http://localhost:3000
@@ -31,7 +34,7 @@ $ npm run dev
 
 ### MongoDB
 
-Set the following ENV VARS:
+Set the following ENV VARS using dotenv. (/.env)
 
 ```sh
 IG_API_KEY

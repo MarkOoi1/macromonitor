@@ -88,8 +88,8 @@ export default function Idea() {
             </CardContent>
           </CardActionArea>
           <CardActions>
-            <Link to="/Account" size="small" color="primary">
-              Account
+            <Link to="/themes/create" size="small" color="primary">
+              Create a Theme
             </Link>
             <Button size="small" color="primary">
               Learn More

@@ -5,5 +5,15 @@ import Footer from "./Footer";
 import Spinner from "./Spinner";
 import ProfileMenu from "./ProfileMenu";
 import Greeting from "./Greeting";
+import CreateTheme from "./CreateTheme";
 
-export { Header, Dashboard, Account, Footer, Spinner, ProfileMenu, Greeting };
+export {
+  Header,
+  Dashboard,
+  Account,
+  Footer,
+  Spinner,
+  ProfileMenu,
+  Greeting,
+  CreateTheme,
+};

@@ -18,8 +18,6 @@ module.exports = {
       _,
       { registerInput: { name, email, password, google } }
     ) => {
-      console.log("Here: ", name, email, password, google);
-
       if (!password && !google) {
         throw new UserInputError("Please enter all fields", {
           errors: "The password was empty or the SSO failed",

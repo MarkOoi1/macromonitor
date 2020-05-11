@@ -5,7 +5,7 @@ import { ProtectedRoute } from "./Auth/ProtectedRoute";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 
-import { Dashboard, Account } from "./Layout";
+import { Dashboard, Account, CreateTheme } from "./Layout";
 import Login from "./Auth/Login";
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "../theme";
@@ -32,6 +32,7 @@ export default function App() {
               <Route exact path="/" component={Login} />
               <ProtectedRoute path="/dashboard" component={Dashboard} />
               <ProtectedRoute path="/account" component={Account} />
+              <ProtectedRoute path="/themes/create" component={CreateTheme} />
             </Switch>
           </Router>
         </ThemeProvider>

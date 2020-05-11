@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
+import gql from "graphql-tag";
+import { useMutation } from "@apollo/react-hooks";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -81,6 +84,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const LOGIN_MUTATION = gql`
+  mutation LoginUser($email: String!, $password: String, $google: String) {
+    login(loginInput: { email: $email, password: $password, google: $google }) {
+      token
+      user {
+        name
+        email
+        date
+        welcomemsg
+        complete
+      }
+    }
+  }
+`;
+
 function Login() {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -93,6 +111,16 @@ function Login() {
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState(null);
 
+  const [loginUser] = useMutation(LOGIN_MUTATION, {
+    update(proxy, result) {
+      dispatch(login(true, result));
+    },
+    onError(err) {
+      dispatch(login(false, err.graphQLErrors[0].extensions.errors));
+      setMsg(err.graphQLErrors[0].extensions.errors);
+    },
+  });
+
   const classes = useStyles();
 
   const handleChangeEmail = (e) => setEmail(e.target.value);
@@ -101,12 +129,12 @@ function Login() {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    const user = {
-      email,
-      password,
-    };
-
-    dispatch(login(user));
+    loginUser({
+      variables: {
+        email,
+        password,
+      },
+    });
   };
 
   useEffect(() => {
@@ -126,12 +154,12 @@ function Login() {
   }, [auth]);
 
   const responseGoogle = (response) => {
-    const userGoogle = {
-      email: response.profileObj.email,
-      google: response.accessToken,
-    };
-
-    dispatch(login(userGoogle));
+    loginUser({
+      variables: {
+        email: response.profileObj.email,
+        google: response.accessToken,
+      },
+    });
   };
 
   return (

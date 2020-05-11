@@ -47,6 +47,7 @@ const Greeting = () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
+            Set your password. <br />
             Select a Theme from the library or create a Theme.
           </DialogContentText>
           <TextField
