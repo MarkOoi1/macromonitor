@@ -5,7 +5,8 @@ import Footer from "./Footer";
 import Spinner from "./Spinner";
 import ProfileMenu from "./ProfileMenu";
 import Greeting from "./Greeting";
-import CreateTheme from "./CreateTheme";
+import ThemeStrategy from "./ThemeStrategy";
+import ThemeTactics from "./ThemeTactics";
 
 export {
   Header,
@@ -15,5 +16,6 @@ export {
   Spinner,
   ProfileMenu,
   Greeting,
-  CreateTheme,
+  ThemeStrategy,
+  ThemeTactics,
 };

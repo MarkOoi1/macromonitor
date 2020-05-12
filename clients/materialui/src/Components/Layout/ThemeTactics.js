@@ -2,12 +2,9 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
+import { Button, Grid, TextField } from "@material-ui/core";
 
-import TextField from "@material-ui/core/TextField";
-
-import { Header, Footer } from "./";
+import { Header, Footer } from ".";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,10 +14,14 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: theme.spacing(2),
       display: "block",
     },
+    "& .MuiButton-root": {
+      margin: theme.spacing(1),
+    },
   },
   form: {
     textAlign: "center",
     color: theme.palette.text.secondary,
+    marginBottom: theme.spacing(10),
   },
 }));
 
@@ -36,7 +37,7 @@ export default function CreateTheme() {
         <Grid container>
           <Grid item xs={4}></Grid>
           <Grid item xs={4} className={classes.form}>
-            <h3>The basics of your Theme</h3>
+            <h3>Outline the Tactics</h3>
             <TextField
               id="filled-basic"
               label="Name of Theme"
@@ -63,6 +64,11 @@ export default function CreateTheme() {
               variant="filled"
               fullWidth
             />
+            <Button variant="contained">Back</Button>
+            <Button variant="contained">Save and Exit</Button>
+            <Button variant="contained" color="primary">
+              Next
+            </Button>
           </Grid>
           <Grid item xs={4}></Grid>
         </Grid>

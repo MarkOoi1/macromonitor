@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   },
   subHeader: {},
   appBar: {
-    backgroundColor: "#111",
+    backgroundColor: "#666",
     width: "100%",
   },
   tab: {
@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  let welcomemsg = props.location.state.welcomemsg;
+  let welcomemsg = props.location.state.welcomemsg || null;
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

@@ -1,6 +1,7 @@
 # (MM) Macro Monitor
 
-MERNG w/ Redux and Material UI
+MERNG w/ Redux and Material UI.
+
 Designed to deploy on Heroku. You can use any cloud MongoDB service, just update the connection string.
 
 Technology Goals:
@@ -12,9 +13,14 @@ Technology Goals:
 - React client with Redux for state management
 - Material UI for presentation
 - NodeJS / Mongo for backend functionality
-- User auth using JWT, Google OATH
+- User auth using JWT, Google OAUTH
 - Server / Client comms via GraphQL and REST APIs
 - Connection to the Theme library
+
+Design Goals:
+
+- Fully responsive
+- Utilise the latest stable Material UI release from the ground up. That is, not use a pre-built downloadable Theme.
 
 ### Version: 0.0.1
 
@@ -32,7 +38,7 @@ $ npm run dev
 # Visit http://localhost:3000
 ```
 
-### MongoDB
+### Keys
 
 Set the following ENV VARS using dotenv. (/.env)
 

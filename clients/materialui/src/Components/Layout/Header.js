@@ -8,7 +8,7 @@ import { ProfileMenu } from "./";
 const useStyles = makeStyles((theme) => ({
   header: {
     minHeight: "60px",
-    borderBottom: "1px solid #333",
+    borderBottom: theme.palette.primary.light,
   },
   logo: {
     paddingTop: "18px",

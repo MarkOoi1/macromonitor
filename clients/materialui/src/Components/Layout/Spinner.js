@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
     left: 0,
     width: "100%",
     height: "100%",
-    backgroundColor: "#333",
+    backgroundColor: theme.palette.background.default,
     zIndex: 2000,
   },
   loader: {
