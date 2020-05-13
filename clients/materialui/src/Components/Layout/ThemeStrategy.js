@@ -16,6 +16,7 @@ import {
 } from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
+import { ButtonConfirm } from "../Form";
 
 import { Header, Footer } from ".";
 
@@ -212,7 +213,17 @@ export default function ThemeStrategy() {
                       error={!!errors.end_date}
                     />
 
-                    <Button variant="contained">Cancel</Button>
+                    <ButtonConfirm
+                      variant="contained"
+                      to="/dashboard"
+                      dialog={{
+                        title: "Are you sure?",
+                        msg:
+                          "Your changes will not be saved and you will return to the dashboard",
+                      }}
+                    >
+                      Cancel
+                    </ButtonConfirm>
                     <Button variant="contained">Save and exit</Button>
                     <Button variant="contained" color="primary">
                       Next
