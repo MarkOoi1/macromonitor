@@ -30,7 +30,7 @@
     "node-cron": "^2.0.3",
     "node-ig-api": "^2.0.4",
     "react-moment": "^0.9.7",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.4.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.3"
